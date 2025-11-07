@@ -170,5 +170,121 @@ A continuación, se presenta un resumen de las columnas del DataFrame, incluyend
 | goalkeeper_lost_in_play | object | 1 | 443303 |
 | goalkeeper_lost_out | object | 1 | 443303 |
 
-Podemos observar que muchas columnas tienen una gran cantidad de valores faltantes, lo cual es común en datasets deportivos debido a la naturaleza específica de ciertos eventos. Por ejemplo, columnas relacionadas con tiros tendrán muchos valores faltantes para eventos que no son tiros.
-Además, algunas columnas tienen un número limitado de valores únicos, lo que indica que son categóricas o binarias, mientras que otras tienen una amplia variedad de valores, lo que sugiere que son numéricas o de texto libre.
+Los valores de cada columna son:
+
+1. Column: `50_50`, values: [`'Lost'`, `'Won'`, `'Success To Opposition'`, `'Success To Team'`, None]
+2. Column: `ball_receipt_outcome`, values: [None, `'Incomplete'`]
+3. Column: `ball_recovery_recovery_failure`, values: [None, True]
+4. Column: `block_deflection`, values: [None, True]
+5. Column: `block_offensive`, values: [None, True]
+6. Column: `carry_end_location`, values: `"Location coordinates"`
+7. Column: `clearance_aerial_won`, values: [None, True]
+8. Column: `clearance_body_part`, values: [None, `'Head'`, `'Right Foot'`, `'Left Foot'`, `'Other'`]
+9. Column: `clearance_head`, values: [None, True]
+10. Column: `clearance_left_foot`, values: [None, True]
+11. Column: `clearance_right_foot`, values: [None, True]
+12. Column: `counterpress`, values: [None, True]
+13. Column: `dribble_nutmeg`, values: [None, True]
+14. Column: `dribble_outcome`, values: [None, `'Incomplete'`, `'Complete'`]
+15. Column: `dribble_overrun`, values: [None, True]
+16. Column: `duel_outcome`, values: [None, `'Won'`, `'Success In Play'`, `'Lost Out'`, `'Lost In Play'`, `'Success Out'`]
+17. Column: `duel_type`, values: [None, `'Aerial Lost'`, `'Tackle'`]
+18. Column: `duration`, values: `"Time of the event"`
+19. Column: `foul_committed_advantage`, values: [None, True]
+20. Column: `foul_committed_card`, values: [None, `'Yellow Card'`, `'Second Yellow'`, `'Red Card'`]
+21. Column: `foul_won_advantage`, values: [None, True]
+22. Column: `foul_won_defensive`, values: [None, True]
+23. Column: `goalkeeper_body_part`, values: [None, `'Both Hands'`, `'Left Foot'`, `'Right Foot'`, `'Chest'`, `'Right Hand'`, `'Left Hand'`, `'Head'`]
+24. Column: `goalkeeper_end_location`, values: `"Location coordinates"`
+25. Column: `goalkeeper_outcome`, values: [None, `'Success'`, `'Saved Twice'`, `'Touched Out'`, `'No Touch'`, `'Clear'`, `'Claim'`, `'In Play Danger'`, `'In Play Safe'`, `'Touched In'`, `'Fail'`, `'Success In Play'`, `'Punched out'`, `'Collected Twice'`, `'Won'`, `'Lost In Play'`, `'Lost Out'`]
+26. Column: `goalkeeper_position`, values: [None, `'Set'`, `'Moving'`, `'Prone'`]
+27. Column: `goalkeeper_technique`, values: [None, `'Standing'`, `'Diving'`]
+28. Column: `goalkeeper_type`, values: [None, `'Shot Saved'`, `'Shot Faced'`, `'Goal Conceded'`, `'Collected'`, `'Keeper Sweeper'`, `'Punch'`, `'Shot Saved Off Target'`, `'Penalty Conceded'`, `'Smother'`, `'Save'`, `'Shot Saved to Post'`, `'Saved to Post'`, `'Penalty Saved'`]
+29. Column: `id`, values: `"Unique event identifier"`
+30. Column: `index`, values: `"Row index in the DataFrame"`
+31. Column: `interception_outcome`, values: [None, `'Won'`, `'Success In Play'`, `'Lost In Play'`, `'Lost Out'`, `'Success Out'`]
+32. Column: `location`, values: `"Location coordinates"`
+33. Column: `match_id`, values: `"Unique match identifier"`
+34. Column: `minute`, values: [1, 2, 3, ..., 90]
+35. Column: `off_camera`, values: [None, True]
+36. Column: `out`, values: [None, True]
+37. Column: `pass_aerial_won`, values: [None, True]
+38. Column: `pass_angle`, values: `"Angle of the pass"`
+39. Column: `pass_assisted_shot_id`, values: `"Unique shot identifier for assisted shots"`
+40. Column: `pass_body_part`, values: [None, `'Right Foot'`, `'Left Foot'`, `'Head'`, `'Keeper Arm'`, `'Other'`, `'Drop Kick'`, `'No Touch'`]
+41. Column: `pass_cross`, values: [None, True]
+42. Column: `pass_cut_back`, values: [None, True]
+43. Column: `pass_deflected`, values: [None, True]
+44. Column: `pass_end_location`, values: `"End location coordinates of the pass"`
+45. Column: `pass_goal_assist`, values: [None, True]
+46. Column: `pass_height`, values: [None, `'Ground Pass'`, `'High Pass'`, `'Low Pass'`]
+47. Column: `pass_inswinging`, values: [None, True]
+48. Column: `pass_length`, values: `"Length of the pass"`
+49. Column: `pass_outcome`, values: [None, `'Incomplete'`, `'Out'`, `'Pass Offside'`, `'Unknown'`, `'Injury Clearance'`]
+50. Column: `pass_recipient`, values: `"Name of the pass recipient"`
+51. Column: `pass_recipient_id`, values: `"Unique identifier of the pass recipient"`
+52. Column: `pass_shot_assist`, values: [None, True]
+53. Column: `pass_switch`, values: [None, True]
+54. Column: `pass_technique`, values: [None, `'Inswinging'`, `'Through Ball'`, `'Outswinging'`, `'Straight'`]
+55. Column: `pass_through_ball`, values: [None, True]
+56. Column: `pass_type`, values: [None, `'Kick Off'`, `'Free Kick'`, `'Recovery'`, `'Throw-in'`, `'Goal Kick'`, `'Corner'`, `'Interception'`]
+57. Column: `period`, values: [1, 2]
+58. Column: `play_pattern`, values: [`'Regular Play'`, `'From Free Kick'`, `'From Kick Off'`, `'From Throw In'`, `'From Keeper'`, `'From Goal Kick'`, `'From Counter'`, `'From Corner'`, `'Other'`]
+59. Column: `player`, values: `"Player name"`
+60. Column: `player_id`, values: `"Unique player identifier"`
+61. Column: `position`, values: [None, `'Left Wing'`, `'Left Center Back'`, `'Right Defensive Midfield'`, `'Left Back'`, `'Center Forward'`, `'Right Center Back'`, `'Center Attacking Midfield'`, `'Goalkeeper'`, `'Right Back'`, `'Left Center Midfield'`, `'Left Defensive Midfield'`, `'Right Wing'`, `'Center Defensive Midfield'`, `'Right Center Midfield'`, `'Right Center Forward'`, `'Left Center Forward'`, `'Left Midfield'`, `'Right Midfield'`, `'Center Back'`, `'Right Wing Back'`, `'Left Wing Back'`, `'Center Midfield'`, `'Left Attacking Midfield'`, `'Right Attacking Midfield'`]
+62. Column: `possession`, values: `"Possession sequence identifier"`
+63. Column: `possession_team`, values: [`'Tottenham Hotspur Women'`, `'West Ham United LFC'`, `'Brighton & Hove Albion WFC'`, `'Birmingham City WFC'`, `'Manchester United'`, `'Chelsea FCW'`, `'Arsenal WFC'`, `'Reading WFC'`, `'Aston Villa'`, `'Manchester City WFC'`, `'Bristol City WFC'`, `'Everton LFC'`]
+64. Column: `possession_team_id`, values: [749, 972, 965, 969, 1475, 971, 968, 974, 2647, 746, 973, 967]
+65. Column: `related_events`, values: `"List of related event identifiers"`
+66. Column: `second`, values: `"Second of the event within the minute"`
+67. Column: `shot_aerial_won`, values: [None, True]
+68. Column: `shot_body_part`, values: [None, `'Left Foot'`, `'Right Foot'`, `'Head'`, `'Other'`]
+69. Column: `shot_deflected`, values: [None, True]
+70. Column: `shot_end_location`, values: `"End location coordinates of the shot"`
+71. Column: `shot_first_time`, values: [None, True]
+72. Column: `shot_freeze_frame`, values: `"Freeze-frame data for the shot"`
+73. Column: `shot_key_pass_id`, values: `"Unique identifier of the key pass leading to the shot"`
+74. Column: `shot_one_on_one`, values: [None, True]
+75. Column: `shot_outcome`, values: [None, `'Saved'`, `'Off T'`, `'Post'`, `'Goal'`, `'Blocked'`, `'Wayward'`, `'Saved Off Target'`, `'Saved to Post'`]
+76. Column: `shot_statsbomb_xg`, values: `"Expected goals (xG) value of the shot"`
+77. Column: `shot_technique`, values: [None, `'Normal'`, `'Half Volley'`, `'Volley'`, `'Overhead Kick'`, `'Diving Header'`, `'Backheel'`, `'Lob'`]
+78. Column: `shot_type`, values: [None, `'Open Play'`, `'Free Kick'`, `'Penalty'`, `'Corner'`]
+79. Column: `substitution_outcome`, values: [None, `'Tactical'`, `'Injury'`]
+80. Column: `substitution_outcome_id`, values: [None, 103.0, 102.0]
+81. Column: `substitution_replacement`, values: `"Name of the replacement player"`
+82. Column: `substitution_replacement_id`, values: `"Unique identifier of the replacement player"`
+83. Column: `tactics`, values: `"Tactical information (formation, lineup, etc.)"`
+84. Column: `team`, values: [`'Tottenham Hotspur Women'`, `'West Ham United LFC'`, `'Brighton & Hove Albion WFC'`, `'Birmingham City WFC'`, `'Manchester United'`, `'Chelsea FCW'`, `'Arsenal WFC'`, `'Reading WFC'`, `'Aston Villa'`, `'Manchester City WFC'`, `'Bristol City WFC'`, `'Everton LFC'`]
+85. Column: `team_id`, values: [749, 972, 965, 969, 1475, 971, 968, 974, 2647, 746, 973, 967]
+86. Column: `timestamp`, values: `"Match clock timestamp of the event"`
+87. Column: `type`, values: [`'Starting XI'`, `'Half Start'`, `'Pass'`, `'Ball Receipt*'`, `'Carry'`, `'Duel'`, `'Clearance'`, `'Ball Recovery'`, `'Pressure'`, `'Interception'`, `'Dribbled Past'`, `'Dribble'`, `'Foul Committed'`, `'Foul Won'`, `'Miscontrol'`, `'Block'`, `'Dispossessed'`, `'Shield'`, `'Shot'`, `'Goal Keeper'`, `'50/50'`, `'Injury Stoppage'`, `'Half End'`, `'Substitution'`, `'Error'`, `'Own Goal Against'`, `'Own Goal For'`, `'Tactical Shift'`, `'Referee Ball-Drop'`, `'Offside'`, `'Player Off'`, `'Player On'`, `'Bad Behaviour'`]
+88. Column: `under_pressure`, values: [None, True]
+89. Column: `clearance_other`, values: [None, True]
+90. Column: `foul_committed_offensive`, values: [None, True]
+91. Column: `foul_committed_type`, values: [None, `'Handball'`, `'Dangerous Play'`, `'Foul Out'`, `'Dive'`]
+92. Column: `injury_stoppage_in_chain`, values: [None, True]
+93. Column: `miscontrol_aerial_won`, values: [None, True]
+94. Column: `dribble_no_touch`, values: [None, True]
+95. Column: `goalkeeper_shot_saved_off_target`, values: [None, True]
+96. Column: `pass_outswinging`, values: [None, True]
+97. Column: `pass_straight`, values: [None, True]
+98. Column: `shot_open_goal`, values: [None, True]
+99. Column: `shot_saved_off_target`, values: [None, True]
+100. Column: `ball_recovery_offensive`, values: [None, True]
+101. Column: `block_save_block`, values: [None, True]
+102. Column: `pass_miscommunication`, values: [None, True]
+103. Column: `pass_no_touch`, values: [None, True]
+104. Column: `foul_committed_penalty`, values: [None, True]
+105. Column: `foul_won_penalty`, values: [None, True]
+106. Column: `goalkeeper_success_in_play`, values: [None, True]
+107. Column: `goalkeeper_punched_out`, values: [None, True]
+108. Column: `bad_behaviour_card`, values: [None, `'Second Yellow'`, `'Yellow Card'`, `'Red Card'`]
+109. Column: `half_start_late_video_start`, values: [None, True]
+110. Column: `goalkeeper_shot_saved_to_post`, values: [None, True]
+111. Column: `shot_saved_to_post`, values: [None, True]
+112. Column: `shot_redirect`, values: [None, True]
+113. Column: `goalkeeper_saved_to_post`, values: [None, True]
+114. Column: `shot_follows_dribble`, values: [None, True]
+115. Column: `goalkeeper_lost_in_play`, values: [None, True]
+116. Column: `goalkeeper_lost_out`, values: [None, True]
