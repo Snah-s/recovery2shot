@@ -16,7 +16,7 @@ Vamos a analizar el dataset `events_all_wsl2021.parquet` cargado previamente en 
 df = pd.read_parquet('data/events_all_wsl2021.parquet')
 ```
 
-El dataset contiene información detallada sobre eventos en partidos de fútbol, incluyendo pases, tiros, faltas, entre otros de la liga Barclays Women's Super League 2020/2021. Contiene los eventos de los 121 partidos jugados en esa temporada.
+El dataset contiene información detallada sobre eventos en partidos de fútbol, incluyendo pases, tiros, faltas, entre otros de la liga Barclays Women's Super League 2020/2021. Contiene los eventos de los 131 partidos jugados en esa temporada.
 
 ```python
 df.shape
