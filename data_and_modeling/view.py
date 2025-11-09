@@ -1,3 +1,4 @@
+# %%
 import joblib
 import numpy as np
 import pandas as pd
@@ -26,7 +27,7 @@ print("Equipos disponibles:")
 for k, v in id2name.items():
     print(f"{k}: {v}")
 
-
+# %%
 df_rec = pd.read_parquet(f"train_recovery_matchup_T{TIME_WINDOW_S}s.parquet")
 clf_rec = joblib.load("recovery_matchup_model_rf.joblib")
 
@@ -57,3 +58,26 @@ def matchup_zone_risk(model, data, team_id, opp_id, filter_expr=None):
 # Ejemplo: Arsenal recuperando vs Chelsea
 zt_ars_vs_che = matchup_zone_risk(clf_rec, df_rec, arsenal_id, chelsea_id)
 print(zt_ars_vs_che.head(15))
+
+# %%
+import matplotlib.pyplot as plt
+
+def zone_table_to_grid(zone_df, xbins=12, ybins=8, value_col="p_model"):
+    grid = np.full((ybins, xbins), np.nan)
+    for _, r in zone_df.iterrows():
+        try:
+            zx, zy = map(int, str(r["zone_id"]).split("_"))
+        except:
+            continue
+        if 0 <= zx < xbins and 0 <= zy < ybins:
+            grid[zy, zx] = r[value_col]
+    return grid
+
+grid = zone_table_to_grid(zt_ars_vs_che, xbins=XBINS, ybins=YBINS, value_col="p_model")
+
+plt.figure(figsize=(7,4.8))
+im = plt.imshow(grid, origin="lower", extent=[0,120,0,80], aspect="auto")
+plt.colorbar(im, label="P(tiro Arsenal ≤15s tras recuperar vs Chelsea)")
+plt.title("Arsenal vs Chelsea — Riesgo ofensivo tras recuperación")
+plt.xlabel("X (m)"); plt.ylabel("Y (m)")
+plt.show()
