@@ -1,0 +1,28 @@
+{
+  "n_rows": 25310,
+  "positive_rate": 0.06823389964440932,
+  "cv_auc_mean": 0.8231578068097132,
+  "cv_auc_std": 0.02061402914574647,
+  "cv_ap_mean": 0.3598417265127979,
+  "cv_ap_std": 0.027743840430344013,
+  "features_used": [
+    "start_x",
+    "start_y",
+    "zx",
+    "zy",
+    "start_minute_evt",
+    "period",
+    "a_type",
+    "zone_id",
+    "pos_team",
+    "opp_team_id"
+  ],
+  "class_weight": {
+    "0": 0.5366153585209685,
+    "1": 7.327735958309207
+  },
+  "model_path": "recovery_matchup_model_rf.joblib",
+  "parquets": [
+    "train_recovery_matchup_T15s.parquet"
+  ]
+}
