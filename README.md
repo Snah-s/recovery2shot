@@ -6,8 +6,6 @@ Recovery2Shot is a comprehensive advanced football analytics project that allows
 
 The system combines **statistical modeling, machine learning, event-based data processing**, and an **interactive dashboard** to visualize heat maps, critical zones, and automatic tactical recommendations based on the model results.
 
----
-
 ## Key Features
 
 ### 1. Predictive Models
@@ -29,8 +27,6 @@ Both models are built with:
 * First *K* events of the possession (K_LOOKBACK)
 * Categorical, numerical variables and event flags
 * Binary target defined by configurable time window
-
----
 
 ### 2. Interactive Dashboard (Next.js 16 + TurboPack)
 
@@ -54,8 +50,6 @@ It also generates **automatic recommendations**:
 * Defensive adjustments
 * Offensive adjustments
 * Key movements by sectors (defense - midfield - key players)
-
----
 
 ## Model Logic
 
@@ -92,8 +86,6 @@ Configurable time window (`TIME_WINDOW_S = 15` by default).
 * Numerical variables (pass_length, pass_angle)
 * Aggregated spatial indicators
 
----
-
 ## Dashboard Visualizations
 
 ### Risk Heat Map
@@ -120,9 +112,9 @@ Automatically generated based on:
 * Spatial context (right / left / center)
 * Risk intensity
 
----
-
 ## How to Run the Project
+
+**Important: to access the tactical analysis features with AI, you need an OpenAI API key.**
 
 ### 1. Install dependencies
 
@@ -133,15 +125,15 @@ pip install -r requirements.txt
 ### 2. Build datasets
 
 ```bash
-python data_and_modeling/build_dataset_loss.py
-python data_and_modeling/build_dataset_recovery.py
+python models/transformData1.py
+python models/transformData2.py
 ```
 
 ### 3. Train models
 
 ```bash
-python data_and_modeling/train_modelo1.py
-python data_and_modeling/train_modelo2.py
+python models/trainModel1.py
+python models/trainModel2.py
 ```
 
 ### 4. Start backend
