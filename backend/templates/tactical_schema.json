@@ -1,0 +1,71 @@
+{
+  "análisis": {
+    "riesgo_defensivo": {
+      "zonas_alto_riesgo": {
+        "0_2": 0.22795301774613302,
+        "2_3": 0.22356069612571344,
+        "5_4": 0.24309213601294816,
+        "6_4": 0.23850344251477942
+      },
+      "interpretación": "Estas zonas representan un riesgo notable defensivo, potencialmente expuesto a ataques rápidos o combinaciones del rival."
+    },
+    "peligro_ofensivo": {
+      "zonas_alto_peligro": {
+        "2_2": 0.28720806398439297,
+        "1_2": 0.2684037536450234,
+        "3_4": 0.25427631850320054
+      },
+      "interpretación": "Estas zonas son donde se generan más oportunidades de gol, indicando una buena capacidad de penetración en defensa rival."
+    },
+    "zonas_transito": {
+      "zonas_clave": { "2_0": 0.213361791187371, "2_4": 0.19671299389229502 },
+      "interpretación": "Estas áreas son puntos de transición críticos donde se facilita el movimiento de balón entre líneas."
+    },
+    "zonas_activas_rival": {
+      "zonas_rival": { "4_4": 0.15005020812032774, "3_3": 0.18066552965380397 },
+      "interpretación": "Los rivales parecen generar más actividad en estas zonas, sugiriendo un enfoque defensivo a estas alturas."
+    },
+    "fortalezas_debilidades": {
+      "fortalezas": { "2_2": 0.2872, "1_2": 0.2684 },
+      "debilidades": { "1_7": 0.10776954576702974, "0_4": 0.06217924508900629 },
+      "interpretación": "La zona 2_2 es un punto fuerte en ofensiva, mientras que 1_7 y 0_4 reflejan un débito defensivo."
+    }
+  },
+  "recomendaciones_tácticas": {
+    "ajustes_defensivos": {
+      "reforzar_zonas_riesgo": [
+        {
+          "zona": "0_2",
+          "ajuste": "Aumentar la presión en el medio campo para cerrar la transición del rival."
+        },
+        {
+          "zona": "6_4",
+          "ajuste": "Instruir a los laterales a ofrecer coberturas más efectivas en esta área."
+        }
+      ],
+      "organización_defensiva": "Formación concentrada en doble pivote en el medio campo para asegurar estabilidad defensiva."
+    },
+    "ajustes_ofensivos": {
+      "promover_movimiento": [
+        {
+          "zona": "2_2",
+          "estrategia": "Optimizar el juego en conjunto alrededor de esta zona, generando desmarques en la espalda de la defensa rival."
+        }
+      ]
+    },
+    "salida_balón_construcción": {
+      "estilo": "Preferir juego corto en las zonas de tránsito identificadas (2_0 y 2_4) para mantener la posesión y evitar pérdidas."
+    },
+    "presión": {
+      "nivel": "Media-alta",
+      "justificación": "Presionar al rival con intensidad en el medio campo, especialmente en zonas activas (4_4 y 3_3)."
+    },
+    "movimientos_clave": {
+      "por_línea": {
+        "defensiva": "Los laterales deben unirse al medio campo para formar una línea de 5 durante la presión.",
+        "mediocampo": "Los mediocampistas deberán moverse en triángulos para maximizar opciones de pase y asegurar la cobertura."
+      },
+      "jugador_clave": "Instruir al mediocampista central a desdoblarse y participar en las transiciones ofensivas."
+    }
+  }
+}
