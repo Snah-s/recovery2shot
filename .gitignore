@@ -1,0 +1,12 @@
+data/source/events_all_37_90.parquet
+models/__pycache__
+models/joblib/recovery_risk_model_rf.joblib
+models/joblib/risk_model_rf.joblib
+models/source/events_all_37_90.csv
+models/source/train_outfield_K8_T15s.csv
+models/source/train_recoveries_K8_T15s.csv
+backend/__pycache__
+backend/services/__pycache__
+frontend/node_modules
+frontend/.next
+backend/services/.env
