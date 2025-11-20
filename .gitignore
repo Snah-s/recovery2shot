@@ -5,6 +5,8 @@ models/joblib/risk_model_rf.joblib
 models/source/events_all_37_90.csv
 models/source/train_outfield_K8_T15s.csv
 models/source/train_recoveries_K8_T15s.csv
+models/source/train100k.csv
+models/source/events_all_wsl2021.parquet
 backend/__pycache__
 backend/services/__pycache__
 frontend/node_modules
