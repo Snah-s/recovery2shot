@@ -107,7 +107,7 @@ function DefensiveSection({ data }: any) {
       {zonas.map((z: any, i: number) => (
         <GlassCard key={i}>
           <Chip className="text-xs bg-blue-500/30 border-blue-300/40 text-blue-100 mb-1">
-            Zona {z.zona}
+            Zone {z.zona}
           </Chip>
           <p className="text-base text-white/90 leading-snug">{z.ajuste}</p>
         </GlassCard>
@@ -116,7 +116,7 @@ function DefensiveSection({ data }: any) {
       {data.organización_defensiva && (
         <GlassCard>
           <div className="text-xs uppercase tracking-wide text-white/50 mb-1">
-            Organización defensiva
+            Defensive Organization
           </div>
           <p className="text-base text-white/90">
             {data.organización_defensiva}
@@ -141,7 +141,7 @@ function OffensiveSection({ data }: any) {
       {movimientos.map((m: any, i: number) => (
         <GlassCard key={i}>
           <Chip className="text-xs bg-red-500/30 border-red-300/40 text-red-100 mb-1">
-            Zona {m.zona}
+            Zone {m.zona}
           </Chip>
           <p className="text-base text-white/90 leading-snug">{m.estrategia}</p>
         </GlassCard>
@@ -174,7 +174,7 @@ function MovementsSection({ data }: any) {
       {jugadorClave && (
         <GlassCard>
           <Chip className="text-xs bg-purple-500/30 border-purple-300/40 text-purple-100 mb-1">
-            JUGADOR CLAVE
+            KEY PLAYER
           </Chip>
           <p className="text-base text-white/90 leading-snug">{jugadorClave}</p>
         </GlassCard>

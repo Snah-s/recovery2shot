@@ -33,7 +33,7 @@ export default function TeamsComparison({
   if (!comparison) {
     return (
       <div className="text-muted-foreground text-base py-4 text-center">
-        Generando comparación...
+        Generating comparison...
       </div>
     );
   }
@@ -46,7 +46,7 @@ export default function TeamsComparison({
       <header className="text-center">
         <h2 className="text-3xl text-white tracking-wide flex items-center justify-center gap-3">
           <GitCompareArrows className="w-7 h-7 text-cyan-300" />
-          Comparación Táctica: <strong>{team_name_a}</strong> vs{" "}
+          Tactical Comparison: <strong>{team_name_a}</strong> vs{" "}
           <strong>{team_name_b}</strong>
         </h2>
       </header>
@@ -54,13 +54,13 @@ export default function TeamsComparison({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* ===================== PATRONES COMUNES ===================== */}
         <ComparisonSection
-          title="Patrones Comunes"
+          title="Shared Patterns"
           color="cyan"
           icon={<Sparkles className="w-5 h-5 text-cyan-200" />}
         >
           <ZonaList
             items={c.patrones_comunes}
-            emptyText="No se identificaron patrones comunes."
+            emptyText="No shared patterns identified."
             team_name_a={team_name_a}
             team_name_b={team_name_b}
           />
@@ -68,13 +68,13 @@ export default function TeamsComparison({
 
         {/* ===================== ZONAS DONDE SE ANULAN ===================== */}
         <ComparisonSection
-          title="Zonas Donde Se Anulan"
+          title="Zones Where They Neutralize Each Other"
           color="yellow"
           icon={<ArrowRightLeft className="w-5 h-5 text-yellow-200" />}
         >
           <ZonaList
             items={c.zonas_donde_se_anulan}
-            emptyText="Sin zonas que se anulen directamente."
+            emptyText="No zones where the teams neutralize each other."
             team_name_a={team_name_a}
             team_name_b={team_name_b}
           />
@@ -82,13 +82,13 @@ export default function TeamsComparison({
 
         {/* ===================== VENTAJAS A ===================== */}
         <ComparisonSection
-          title="Ventajas Equipo A"
+          title="Advantages Team A"
           color="green"
           icon={<Sword className="w-5 h-5 text-green-200" />}
         >
           <ZonaList
             items={c.ventajas_equipo_a}
-            emptyText="No se registran ventajas claras."
+            emptyText="No clear advantages identified."
             team_name_a={team_name_a}
             team_name_b={team_name_b}
           />
@@ -96,13 +96,13 @@ export default function TeamsComparison({
 
         {/* ===================== VENTAJAS B ===================== */}
         <ComparisonSection
-          title="Ventajas Equipo B"
+          title="Advantages Team B"
           color="red"
           icon={<Shield className="w-5 h-5 text-red-200" />}
         >
           <ZonaList
             items={c.ventajas_equipo_b}
-            emptyText="No se registran ventajas claras."
+            emptyText="No clear advantages identified."
             team_name_a={team_name_a}
             team_name_b={team_name_b}
           />
@@ -112,25 +112,25 @@ export default function TeamsComparison({
       {/* ===================== CONTRASTES + RECOMENDACIONES ===================== */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ComparisonSection
-          title="Contrastes Tácticos"
+          title="Tactical Contrasts"
           color="purple"
           icon={<GitCompareArrows className="w-5 h-5 text-purple-200" />}
         >
           <ContrasteList
             items={c.contrastes_tácticos}
-            emptyText="No se encontraron contrastes fuertes."
+            emptyText="No strong contrasts identified."
             team_name_a={team_name_a}
             team_name_b={team_name_b}
           />
         </ComparisonSection>
 
         <ComparisonSection
-          title="Recomendaciones Estratégicas"
+          title="Strategic Recommendations"
           color="blue"
           icon={<Sparkles className="w-5 h-5 text-blue-200" />}
         >
           <StrategyBlock
-            title="Para Equipo A"
+            title="For Team A"
             items={c.recomendaciones_estratégicas.para_equipo_a}
             chipColor="bg-blue-400/20 text-blue-200 border-blue-300/40"
           />
@@ -238,7 +238,7 @@ function ZonaList({
               <Card className="bg-transparent border-none shadow-none text-white flex-1">
                 <CardBody className="flex flex-col justify-center items-center p-0">
                   <CircularProgress
-                    aria-label={`Equipo ${team_name_a} ${aPercent.toFixed(1)}%`}
+                    aria-label={`Team ${team_name_a} ${aPercent.toFixed(1)}%`}
                     value={aPercent}
                     showValueLabel={true}
                     strokeWidth={4}
@@ -269,7 +269,7 @@ function ZonaList({
               <Card className="bg-transparent border-none shadow-none text-white flex-1">
                 <CardBody className="flex flex-col justify-center items-center p-0">
                   <CircularProgress
-                    aria-label={`Equipo ${team_name_b} ${bPercent.toFixed(1)}%`}
+                    aria-label={`Team ${team_name_b} ${bPercent.toFixed(1)}%`}
                     value={bPercent}
                     showValueLabel={true}
                     strokeWidth={4}
@@ -390,7 +390,7 @@ function StrategyBlock({
           ))}
         </ul>
       ) : (
-        <p className="text-white/60 text-base">Sin recomendaciones.</p>
+        <p className="text-white/60 text-base">No recommendations.</p>
       )}
     </div>
   );

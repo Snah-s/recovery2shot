@@ -47,13 +47,13 @@ export default function HeatmapVisualization({
           [1, "#dc2626"],
         ],
         colorbar: {
-          title: "Probabilidad<br>de Tiro",
+          title: "Shot<br>Probability",
           thickness: 20,
           len: 0.7,
           x: 1.02,
         },
         hovertemplate:
-          "Zona: (%{x:.1f}m, %{y:.1f}m)<br>Riesgo: %{z:.2%}<extra></extra>",
+          "Zone: (%{x:.1f}m, %{y:.1f}m)<br>Risk: %{z:.2%}<extra></extra>",
         showscale: true,
         zsmooth: "best",
         opacity: 0.9,
@@ -199,18 +199,18 @@ export default function HeatmapVisualization({
   // === Layout general ===
   const layout = {
     title: {
-      text: `${data.team_name} - Mapa de Riesgo de Pérdidas`,
+      text: `${data.team_name} - Loss Risk Heatmap`,
       font: { size: 16, color: "var(--foreground)" },
     },
     xaxis: {
-      title: "Ancho del Campo (m)",
+      title: "Field Width (m)",
       showgrid: false,
       zeroline: false,
       range: [0, 120],
       scaleanchor: "y",
     },
     yaxis: {
-      title: "Largo del Campo (m)",
+      title: "Field Length (m)",
       showgrid: false,
       zeroline: false,
       range: [0, 80],

@@ -61,7 +61,7 @@ export default function TacticalRecommendations({
       <div>
         <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-green-400"></span>
-          Zonas Seguras
+          Safe Zones
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {lowRiskZones.map((zone) => (
@@ -97,7 +97,7 @@ function RiskCard({ zone }: { zone: Zone }) {
     <Card className="w-full border border-white/10 bg-white/5 backdrop-blur-md text-white transition hover:bg-white/10">
       <CardBody className="justify-center items-center pb-0">
         <CircularProgress
-          aria-label={`Nivel de riesgo ${percentage.toFixed(1)}%`}
+          aria-label={`Risk level ${percentage.toFixed(1)}%`}
           value={percentage}
           showValueLabel={true}
           strokeWidth={4}
@@ -119,7 +119,7 @@ function RiskCard({ zone }: { zone: Zone }) {
             content: `${colorMap[color].split(" ")[1]} text-sm font-semibold`,
           }}
         >
-          Riesgo: {percentage.toFixed(1)}%
+          Risk: {percentage.toFixed(1)}%
         </Chip>
       </CardFooter>
     </Card>

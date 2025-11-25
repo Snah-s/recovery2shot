@@ -32,8 +32,8 @@ export default function RiskComparison({ teams }: RiskComparisonProps) {
         </BarChart>
       </ResponsiveContainer>
       <div className="mt-4 text-sm text-muted-foreground">
-        <p className="font-semibold text-foreground mb-2">Riesgo Promedio por Equipo</p>
-        <p>Comparativa de probabilidad de tiro rival en los próximos 15 segundos</p>
+        <p className="font-semibold text-foreground mb-2">Average Risk per Team</p>
+        <p>Comparison of opponent shot probability in the next 15 seconds</p>
       </div>
     </div>
   )

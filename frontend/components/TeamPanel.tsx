@@ -24,9 +24,7 @@ export default function TeamPanel({
   tacticalAdvice,
 }: any) {
   if (!teamData)
-    return (
-      <div className="text-white/40 text-sm">No hay datos del equipo.</div>
-    );
+    return <div className="text-white/40 text-sm">No team data available.</div>;
 
   return (
     <>
@@ -34,16 +32,16 @@ export default function TeamPanel({
       {teamData && (
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard
-            title="Riesgo Promedio"
+            title="Average Risk"
             value={`${(teamData.average_risk * 100).toFixed(1)}%`}
             percent={teamData.average_risk * 100}
           />
           <StatCard
-            title="Zonas Analizadas"
+            title="Analyzed Zones"
             value={teamData.zones.length.toString()}
           />
           <StatCard
-            title="Zona de Mayor Riesgo"
+            title="Highest-Risk Zone"
             value={
               teamData.zones.reduce((max, z) =>
                 z.risk_level > max.risk_level ? z : max
@@ -54,7 +52,7 @@ export default function TeamPanel({
             setColor={setColorHighLight}
           />
           <StatCard
-            title="Zona de Menor Riesgo"
+            title="Lowest-Risk Zone"
             value={
               teamData.zones.reduce((min, z) =>
                 z.risk_level < min.risk_level ? z : min
@@ -74,16 +72,16 @@ export default function TeamPanel({
           <CardHeader className="border-b border-border/50">
             <CardTitle className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-primary"></div>
-              Mapa de Calor del Campo
+              Field Heatmap
             </CardTitle>
             <CardDescription>
-              Probabilidad de tiro rival por zona (120x80 m)
+              Opponent shot probability per zone (120x80 m)
             </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
             {loading ? (
               <div className="flex items-center justify-center h-96">
-                <div className="text-muted-foreground">Cargando datos...</div>
+                <div className="text-muted-foreground">Loading data...</div>
               </div>
             ) : teamData ? (
               <HeatmapVisualization
@@ -92,7 +90,7 @@ export default function TeamPanel({
                 color={colorHighLight}
               />
             ) : (
-              <div className="text-muted-foreground text-center">Sin datos</div>
+              <div className="text-muted-foreground text-center">No data</div>
             )}
           </CardContent>
         </Card>
@@ -104,7 +102,7 @@ export default function TeamPanel({
             <CardHeader className="border-b border-border/50 m-0 p-0">
               <CardTitle className="text-lg flex items-center gap-2 m-0 p-0">
                 <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
-                Zonas de Alto Riesgo
+                High-Risk Zones
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
@@ -112,7 +110,7 @@ export default function TeamPanel({
                 <TacticalRecommendations teamData={teamData} />
               ) : (
                 <div className="text-muted-foreground text-sm">
-                  Sin datos tácticos
+                  No tactical data
                 </div>
               )}
             </CardContent>

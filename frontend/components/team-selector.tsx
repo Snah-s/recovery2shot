@@ -29,12 +29,12 @@ export default function TeamSelector({
         onValueChange={(v) => onTeamChange(Number(v))}
       >
         <SelectTrigger className="w-60 border-white">
-          <SelectValue placeholder="Selecciona un equipo" />
+          <SelectValue placeholder="Select a team" />
         </SelectTrigger>
         <SelectContent>
           {teams.map((team) => (
             <SelectItem key={team.team_id} value={team.team_id.toString()}>
-              {team.team_name} ({team.events} eventos)
+              {team.team_name} ({team.events} events)
             </SelectItem>
           ))}
         </SelectContent>

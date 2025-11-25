@@ -51,6 +51,7 @@ export default function RiskDashboard() {
   const [selectedTeam, setSelectedTeam] = useState<number>(749);
   const [selectedTeamB, setSelectedTeamB] = useState<number>(746);
   const [modelType, setModelType] = useState<ModelType>("turnover");
+  const [modelType_2, setModelType_2] = useState<ModelType>("turnover");
   const [teamData, setTeamData] = useState<TeamRiskData | null>(null);
   const [teamDataB, setTeamDataB] = useState<TeamRiskData | null>(null);
   const [allTeamsRisk, setAllTeamsRisk] = useState<
@@ -72,31 +73,45 @@ export default function RiskDashboard() {
   const [comparison, setComparison] = useState<ComparisonJSON | null>(null);
 
   // ===============================
-  // 🔹 1. Obtener lista de equipos
+  // 🔹 1. Obtener lista de equipos (A y B según su modelo)
   // ===============================
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(
+        const resA = await fetch(
           `http://localhost:8000/teams?model_type=${modelType}`
         );
-        if (!res.ok) throw new Error("No se pudo obtener la lista de equipos");
-        const data: Array<{
-          team_id: number;
-          team_name: string;
-          events: number;
-        }> = await res.json();
-        setTeams(data);
-        if (data.length > 0) {
+        const resB = await fetch(
+          `http://localhost:8000/teams?model_type=${modelType_2}`
+        );
+
+        if (!resA.ok || !resB.ok)
+          throw new Error("No se pudo obtener la lista de equipos");
+
+        const dataA = await resA.json();
+        const dataB = await resB.json();
+
+        setTeams(dataA); // puedes unificarlos si quieres
+
+        // Ajuste selección equipo A
+        if (dataA.length > 0) {
           setSelectedTeam((prev) => {
-            const exists = data.some((team) => team.team_id === prev);
-            return exists ? prev : data[0].team_id;
+            const exists = dataA.some(
+              (t: { team_id: number; team_name: string; events: number }) =>
+                t.team_id === prev
+            );
+            return exists ? prev : dataA[0].team_id;
           });
+        }
+
+        // Ajuste selección equipo B
+        if (dataB.length > 0) {
           setSelectedTeamB((prev) => {
-            const exists = data.some((team) => team.team_id === prev);
-            if (exists) return prev;
-            if (data.length > 1) return data[1].team_id;
-            return data[0].team_id;
+            const exists = dataB.some(
+              (t: { team_id: number; team_name: string; events: number }) =>
+                t.team_id === prev
+            );
+            return exists ? prev : dataB[0].team_id;
           });
         }
       } catch (err) {
@@ -104,7 +119,7 @@ export default function RiskDashboard() {
       }
     };
     fetchTeams();
-  }, [modelType]);
+  }, [modelType, modelType_2]);
 
   async function fetchTeamRisk(
     teamId: number,
@@ -174,7 +189,7 @@ export default function RiskDashboard() {
         setComparison(null);
 
         const teamA = await fetchTeamRisk(selectedTeam, modelType);
-        const teamB = await fetchTeamRisk(selectedTeamB, modelType);
+        const teamB = await fetchTeamRisk(selectedTeamB, modelType_2);
         // Guardar datos individuales (puede servir luego)
         setTeamData(teamA);
         setTeamDataB(teamB);
@@ -190,7 +205,7 @@ export default function RiskDashboard() {
     };
 
     loadComparison();
-  }, [selectedTeam, selectedTeamB, modelType]);
+  }, [selectedTeam, selectedTeamB, modelType, modelType_2]);
 
   async function fetchTeamComparison(teamA: TeamRiskData, teamB: TeamRiskData) {
     // Convertir formato → { "x_y": prob }
@@ -233,7 +248,7 @@ export default function RiskDashboard() {
         setError(null);
 
         const riskData = await fetchTeamRisk(selectedTeam, modelType);
-        const riskDataB = await fetchTeamRisk(selectedTeamB, modelType);
+        const riskDataB = await fetchTeamRisk(selectedTeamB, modelType_2);
         setTeamData(riskData);
         setTeamDataB(riskDataB);
       } catch (err) {
@@ -244,7 +259,7 @@ export default function RiskDashboard() {
     };
 
     fetchTeamData();
-  }, [selectedTeam, selectedTeamB, modelType]);
+  }, [selectedTeam, selectedTeamB, modelType, modelType_2]);
 
   useEffect(() => {
     const fetchTacticalData = async () => {
@@ -280,11 +295,11 @@ export default function RiskDashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
-            Análisis de Riesgo de Pérdidas
+            Loss Risk Analysis
           </h1>
           <p className="text-muted-foreground">
-            Visualización de probabilidad de tiro rival en los próximos 15
-            segundos
+            Visualization of opponent shot probability within the next 15
+            seconds
           </p>
         </div>
 
@@ -293,51 +308,71 @@ export default function RiskDashboard() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between bg-gray-500/10 py-4 px-4 rounded-md shadow-md">
             <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
               <TeamSelector
-                title="Seleccionar Equipo:"
+                title="Select Team:"
                 selectedTeam={selectedTeam}
                 onTeamChange={setSelectedTeam}
                 teams={teams}
               />
 
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+                <label className="text-lg font-semibold text-foreground">
+                  Model Type:
+                </label>
+                <Select
+                  value={modelType}
+                  onValueChange={(value) => setModelType(value as ModelType)}
+                >
+                  <SelectTrigger className="w-60 border-white">
+                    <SelectValue placeholder="Select model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MODEL_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <TeamSelector
-                title="Seleccionar Equipo Contrario:"
+                title="Select Opponent Team:"
                 selectedTeam={selectedTeamB}
                 onTeamChange={setSelectedTeamB}
                 teams={teams}
               />
-            </div>
-
-            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-              <label className="text-lg font-semibold text-foreground">
-                Tipo de modelo:
-              </label>
-              <Select
-                value={modelType}
-                onValueChange={(value) => setModelType(value as ModelType)}
-              >
-                <SelectTrigger className="w-60 border-white">
-                  <SelectValue placeholder="Selecciona el modelo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MODEL_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+                <label className="text-lg font-semibold text-foreground">
+                  Model Type:
+                </label>
+                <Select
+                  value={modelType_2}
+                  onValueChange={(value) => setModelType_2(value as ModelType)}
+                >
+                  <SelectTrigger className="w-60 border-white">
+                    <SelectValue placeholder="Select model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MODEL_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
 
         <Tabs
-          aria-label="Selector de equipo"
+          aria-label="Team Selector"
           color="primary"
           variant="underlined"
           className="w-full items-center justify-center"
         >
           {/* ================= TAB EQUIPO A ================= */}
-          <Tab key="equipo-a" title={`Equipo A: ${teamData?.team_name ?? ""}`}>
+          <Tab key="team-a" title={`Team A: ${teamData?.team_name ?? ""}`}>
             <TeamPanel
               typeTeam="A"
               teamData={teamData}
@@ -351,7 +386,7 @@ export default function RiskDashboard() {
           </Tab>
 
           {/* ================= TAB EQUIPO B ================= */}
-          <Tab key="equipo-b" title={`Equipo B: ${teamDataB?.team_name ?? ""}`}>
+          <Tab key="team-b" title={`Team B: ${teamDataB?.team_name ?? ""}`}>
             <TeamPanel
               typeTeam="B"
               teamData={teamDataB}
@@ -363,7 +398,7 @@ export default function RiskDashboard() {
               tacticalAdvice={tacticalAdviceB}
             />
           </Tab>
-          <Tab key="Comparación Táctica" title={`Comparación Táctica`}>
+          <Tab key="tactical-comparison" title={`Tactical Comparison`}>
             <>
               <div className="my-8 border-1 border-white/20"></div>
               <TeamsComparison
@@ -386,10 +421,10 @@ export default function RiskDashboard() {
                   <CardHeader className="border-b border-border/50">
                     <CardTitle className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      Mapa de Calor del Campo
+                      Field Heatmap
                     </CardTitle>
                     <CardDescription>
-                      Probabilidad de tiro rival por zona (120x80 m)
+                      Opponent shot probability per zone (120x80 m)
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-6">
