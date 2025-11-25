@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { trackEvent } from "@/lib/analytics";
 
 interface Zone {
   zone_id: string;
@@ -70,6 +72,27 @@ export default function RiskDashboard() {
     null
   );
   const [comparison, setComparison] = useState<ComparisonJSON | null>(null);
+  // ==============================
+  // 🔍 Refs para métricas de tiempo
+  // ==============================
+
+  // Modelo actual y tiempo en él
+  const modelStartRef = useRef<number>(performance.now());
+  const modelRef = useRef<ModelType>(modelType);
+
+  // Equipo A
+  const teamAStartRef = useRef<number>(performance.now());
+  const teamARef = useRef<number>(selectedTeam);
+
+  // Equipo B
+  const teamBStartRef = useRef<number>(performance.now());
+  const teamBRef = useRef<number>(selectedTeamB);
+
+  // Panel (tab) activo
+  const [activeTab, setActiveTab] = useState("equipo-a");
+  const tabStartRef = useRef<number>(performance.now());
+  const tabRef = useRef<string>("equipo-a");
+
 
   // ===============================
   // 🔹 1. Obtener lista de equipos
@@ -271,6 +294,72 @@ export default function RiskDashboard() {
     }
   }, [selectedTeamB, teamDataB]);
 
+    // Tiempo que el usuario pasa en cada modelo (turnover / recovery)
+  useEffect(() => {
+    const now = performance.now();
+
+    // No logueamos la primera vez si no quieres ruido, pero para simplificar lo hacemos siempre
+    trackEvent("model_view_time", {
+      model: modelRef.current,
+      duration_ms: now - modelStartRef.current,
+    });
+
+    modelRef.current = modelType;
+    modelStartRef.current = now;
+  }, [modelType]);
+
+  // Tiempo viendo el equipo A
+  useEffect(() => {
+    const now = performance.now();
+
+    trackEvent("team_view_time", {
+      slot: "A",
+      team_id: teamARef.current,
+      duration_ms: now - teamAStartRef.current,
+    });
+
+    teamARef.current = selectedTeam;
+    teamAStartRef.current = now;
+  }, [selectedTeam]);
+
+  // Tiempo viendo el equipo B
+  useEffect(() => {
+    const now = performance.now();
+
+    trackEvent("team_view_time", {
+      slot: "B",
+      team_id: teamBRef.current,
+      duration_ms: now - teamBStartRef.current,
+    });
+
+    teamBRef.current = selectedTeamB;
+    teamBStartRef.current = now;
+  }, [selectedTeamB]);
+
+    // Profundidad máxima de scroll alcanzada en esta vista
+  useEffect(() => {
+    const info = { max: 0 };
+
+    function handleScroll() {
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+
+      const percent = window.scrollY / docHeight;
+      if (percent > info.max) info.max = percent;
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+
+      trackEvent("scroll_depth", {
+        max_scroll_percent: Math.round(info.max * 100),
+      });
+    };
+  }, []);
+
   // ===============================
   // 🧩 Render
   // ===============================
@@ -313,7 +402,10 @@ export default function RiskDashboard() {
               </label>
               <Select
                 value={modelType}
-                onValueChange={(value) => setModelType(value as ModelType)}
+                onValueChange={(value) => {
+                  trackEvent("model_change_click", { new_model: value });
+                  setModelType(value as ModelType);
+                }}
               >
                 <SelectTrigger className="w-60 border-white">
                   <SelectValue placeholder="Selecciona el modelo" />
@@ -331,6 +423,19 @@ export default function RiskDashboard() {
         </div>
 
         <Tabs
+          selectedKey={activeTab}
+          onSelectionChange={(key) => {
+            const now = performance.now();
+
+            trackEvent("panel_view_time", {
+              panel: tabRef.current,
+              duration_ms: now - tabStartRef.current,
+            });
+
+            tabRef.current = String(key);
+            tabStartRef.current = now;
+            setActiveTab(String(key));
+          }}
           aria-label="Selector de equipo"
           color="primary"
           variant="underlined"
