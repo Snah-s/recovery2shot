@@ -3,11 +3,14 @@ from pydantic import BaseModel
 from typing import Dict
 from services.risk_service import predict_risk, team_zone_risk
 from services.ai_service import GPTTacticalService
+from services.log_service import LogService
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import json
 import re
 import os
+from pathlib import Path
+from datetime import datetime
 
 # ==============================
 # CONFIGURACIÓN DEL SERVIDOR
@@ -258,3 +261,18 @@ def team_summary(team_id: int, model_type: str = DEFAULT_MODEL_TYPE):
         "safe_zones": safe_zones.to_dict(orient="records"),
         "main_recommendation": recommendation,
     }
+class MetricInput(BaseModel):
+    event_type: str
+    session_id: str
+    timestamp: float
+    data: dict
+
+@app.post("/metrics")
+def log_metrics(event: MetricInput):
+    LogService.write({
+        "event_type": event.event_type,
+        "session_id": event.session_id,
+        "timestamp_client": event.timestamp,
+        "data": event.data
+    })
+    return {"status": "ok"}

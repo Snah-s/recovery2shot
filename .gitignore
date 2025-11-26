@@ -12,3 +12,4 @@ backend/services/__pycache__
 frontend/node_modules
 frontend/.next
 backend/services/.env
+backend/logs

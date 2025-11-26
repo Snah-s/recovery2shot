@@ -1,17 +1,23 @@
 "use client";
 
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CircularProgress } from "@heroui/react";
+
+import { Card, CardBody, CircularProgress, Chip } from "@heroui/react";
 
 import HeatmapVisualization from "./heatmap-visualization";
 import TacticalRecommendations from "./tactical-recommendations";
 import TacticalRecommendations1 from "./tactical-recommendations1";
+
+interface Zone {
+  zone_id: string;
+  risk_level: number;
+  description: string;
+}
 
 export default function TeamPanel({
   typeTeam,
@@ -30,43 +36,21 @@ export default function TeamPanel({
     <>
       {/* === FOOTER ESTADÍSTICO === */}
       {teamData && (
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard
-            title="Average Risk"
-            value={`${(teamData.average_risk * 100).toFixed(1)}%`}
-            percent={teamData.average_risk * 100}
-          />
-          <StatCard
-            title="Analyzed Zones"
-            value={teamData.zones.length.toString()}
-          />
-          <StatCard
-            title="Highest-Risk Zone"
-            value={
-              teamData.zones.reduce((max, z) =>
-                z.risk_level > max.risk_level ? z : max
-              ).zone_id
-            }
-            color="text-warning"
-            onHover={setHighlightZone}
-            setColor={setColorHighLight}
-          />
-          <StatCard
-            title="Lowest-Risk Zone"
-            value={
-              teamData.zones.reduce((min, z) =>
-                z.risk_level < min.risk_level ? z : min
-              ).zone_id
-            }
-            color="text-success"
-            onHover={setHighlightZone}
-            setColor={setColorHighLight}
-          />
+        <div className="mt-6 grid grid-cols-1 gap-4">
+          {teamData ? (
+            <TacticalRecommendations
+              teamData={teamData}
+              title="Average Risk"
+              percent={teamData.average_risk * 100}
+            />
+          ) : (
+            <div className="text-muted-foreground text-sm">
+              No tactical data
+            </div>
+          )}
         </div>
       )}
-      <div className="grid grid-cols-3 gap-6 py-4">
-        {/* === LADO IZQUIERDO === */}
-
+      <div className="grid grid-cols-3 gap-6 py-4 mt-8">
         {/* === HEATMAP === */}
         <Card className="col-span-2 h-full w-full border-border/50 shadow-lg">
           <CardHeader className="border-b border-border/50">
@@ -78,7 +62,7 @@ export default function TeamPanel({
               Opponent shot probability per zone (120x80 m)
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-2 flex items-center justify-center ">
             {loading ? (
               <div className="flex items-center justify-center h-96">
                 <div className="text-muted-foreground">Loading data...</div>
@@ -96,23 +80,44 @@ export default function TeamPanel({
         </Card>
 
         {/* === LADO DERECHO === */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 col-span-1">
           {/* Recomendaciones tácticas */}
           <Card className="border-border/50 shadow-lg flex-1">
             <CardHeader className="border-b border-border/50 m-0 p-0">
               <CardTitle className="text-lg flex items-center gap-2 m-0 p-0">
                 <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
-                High-Risk Zones
+                Team Performance Metrics
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {teamData ? (
-                <TacticalRecommendations teamData={teamData} />
-              ) : (
-                <div className="text-muted-foreground text-sm">
-                  No tactical data
-                </div>
-              )}
+            <CardContent className="p-6 flex  items-center justify-center h-full">
+              <div className="w-full grid grid-cols-1 xl:grid-cols-2">
+                <StatCard
+                  title="Analyzed Zones"
+                  value={teamData.zones.length.toString()}
+                />
+                <StatCard
+                  title="Highest-Risk Zone"
+                  value={
+                    teamData.zones.reduce((max, z) =>
+                      z.risk_level > max.risk_level ? z : max
+                    ).zone_id
+                  }
+                  color="text-warning"
+                  onHover={setHighlightZone}
+                  setColor={setColorHighLight}
+                />
+                <StatCard
+                  title="Lowest-Risk Zone"
+                  value={
+                    teamData.zones.reduce((min, z) =>
+                      z.risk_level < min.risk_level ? z : min
+                    ).zone_id
+                  }
+                  color="text-success"
+                  onHover={setHighlightZone}
+                  setColor={setColorHighLight}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -159,7 +164,7 @@ function StatCard({
 
   return (
     <Card
-      className="border-border/50 h-44 bg-gray-500/25"
+      className="border-border/50 h-44 bg-gray-500/5 rounded-2xl my-3 py-6"
       onMouseEnter={() => {
         onHover?.(value);
         setColor?.(color ?? "");
@@ -169,29 +174,14 @@ function StatCard({
         setColor?.("");
       }}
     >
-      <CardContent className="flex flex-col items-center">
-        <div className="text-sm text-muted-foreground mb-1">{title}</div>
-        {percent && (
-          <CircularProgress
-            aria-label={`Nivel de riesgo ${percent}%`}
-            value={percent}
-            showValueLabel={true}
-            strokeWidth={4}
-            classNames={{
-              svg: "w-28 h-28 drop-shadow-md",
-              indicator: colorMap[colors].split(" ")[0], // stroke color
-              track: "stroke-white/20",
-              value: `text-2xl font-semibold ${colorMap[colors].split(" ")[1]}`, // text color
-            }}
-          />
-        )}
-        {!percent && (
-          <div
-            className={`font-bold ${color} w-full h-24 flex items-center justify-center text-3xl`}
-          >
-            {value}
-          </div>
-        )}
+      <CardHeader className="text-xl font-bold flex items-center justify-center text-center">
+        {title}
+      </CardHeader>
+
+      <CardContent
+        className={`font-bold ${color} w-full flex h-full items-center justify-center text-4xl`}
+      >
+        {value}
       </CardContent>
     </Card>
   );

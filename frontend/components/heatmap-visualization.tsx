@@ -224,10 +224,12 @@ export default function HeatmapVisualization({
   };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full h-full bg-transparent">
       <Plot
         data={plotData}
         layout={layout}
+        style={{ width: "100%", height: "100%" }}
+        useResizeHandler={true}
         config={{ responsive: true, displayModeBar: false }}
       />
     </div>

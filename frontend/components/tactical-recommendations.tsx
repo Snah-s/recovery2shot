@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Chip,
 } from "@heroui/react";
+import { CardHeader } from "./ui/card";
 
 interface Zone {
   zone_id: string;
@@ -25,8 +26,12 @@ interface TeamRiskData {
 
 export default function TacticalRecommendations({
   teamData,
+  title,
+  percent,
 }: {
   teamData: TeamRiskData;
+  title: string;
+  percent: number;
 }) {
   const highRiskZones = useMemo(
     () =>
@@ -47,28 +52,15 @@ export default function TacticalRecommendations({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {/* === Zonas de Alto Riesgo === */}
-      <div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {highRiskZones.map((zone) => (
-            <RiskCard key={zone.zone_id} zone={zone} />
-          ))}
-        </div>
-      </div>
-
-      {/* === Zonas Seguras === */}
-      <div>
-        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-green-400"></span>
-          Safe Zones
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {lowRiskZones.map((zone) => (
-            <RiskCard key={zone.zone_id} zone={zone} />
-          ))}
-        </div>
-      </div>
+      <RiskCard2 percent={percent} title={title} />
+      {highRiskZones.map((zone) => (
+        <RiskCard key={zone.zone_id} zone={zone} title="High-Risk Zones" />
+      ))}
+      {lowRiskZones.map((zone) => (
+        <RiskCard key={zone.zone_id} zone={zone} title="Safe Zones" />
+      ))}
     </div>
   );
 }
@@ -76,7 +68,7 @@ export default function TacticalRecommendations({
 /* ==============================
    COMPONENTE DE TARJETA DE RIESGO
    ============================== */
-function RiskCard({ zone }: { zone: Zone }) {
+function RiskCard({ zone, title }: { zone: Zone; title: string }) {
   const percentage = zone.risk_level * 100;
 
   // 🎨 Color dinámico según riesgo
@@ -94,8 +86,13 @@ function RiskCard({ zone }: { zone: Zone }) {
   };
 
   return (
-    <Card className="w-full border border-white/10 bg-white/5 backdrop-blur-md text-white transition hover:bg-white/10">
-      <CardBody className="justify-center items-center pb-0">
+    <Card className="border-border/50 m-0 rounded-xl h-44 bg-gray-500/25">
+      <CardHeader className="flex items-center justify-center">
+        <h3 className="font-semibold text-xl text-foreground mb-0 mt-1 flex items-center gap-2">
+          {title}
+        </h3>
+      </CardHeader>
+      <CardBody className="flex flex-row justify-center items-center pb-0">
         <CircularProgress
           aria-label={`Risk level ${percentage.toFixed(1)}%`}
           value={percentage}
@@ -108,20 +105,70 @@ function RiskCard({ zone }: { zone: Zone }) {
             value: `text-2xl font-semibold ${colorMap[color].split(" ")[1]}`, // text color
           }}
         />
+        <div className="flex flex-col justify-center items-center space-y-1">
+          <div className="text-xl font-medium">Zone: {zone.zone_id}</div>
+          <Chip
+            variant="bordered"
+            classNames={{
+              base: "border-white/30",
+              content: `${colorMap[color].split(" ")[1]} text-xl font-semibold`,
+            }}
+          >
+            Risk: {percentage.toFixed(1)}%
+          </Chip>
+        </div>
       </CardBody>
+    </Card>
+  );
+}
 
-      <CardFooter className="flex flex-col justify-center items-center pt-1 space-y-1">
-        <div className="text-lg font-medium">{zone.zone_id}</div>
-        <Chip
-          variant="bordered"
+function RiskCard2({ percent, title }: { percent: number; title: string }) {
+  // 🎨 Color dinámico según riesgo
+  const getColor = (value: number) => {
+    if (value > 50) return "red"; // alto riesgo
+    if (value > 12) return "yellow"; // riesgo medio
+    return "green"; // seguro
+  };
+
+  const color = getColor(percent);
+  const colorMap: Record<string, string> = {
+    red: "stroke-red-500 text-red-400",
+    yellow: "stroke-yellow-400 text-yellow-300",
+    green: "stroke-green-400 text-green-300",
+  };
+
+  return (
+    <Card className="border-border/50  rounded-xl h-44 bg-gray-500/25">
+      <CardHeader className="flex items-center justify-center">
+        <h3 className="font-semibold text-xl text-foreground mb-0 mt-1 flex items-center gap-2">
+          {title}
+        </h3>
+      </CardHeader>
+      <CardBody className="flex flex-row justify-center items-center pb-0">
+        <CircularProgress
+          aria-label={`Risk level ${(percent ?? 0).toFixed(1)}%`}
+          value={percent}
+          showValueLabel={true}
+          strokeWidth={4}
           classNames={{
-            base: "border-white/30",
-            content: `${colorMap[color].split(" ")[1]} text-sm font-semibold`,
+            svg: "w-28 h-28 drop-shadow-md",
+            indicator: colorMap[color].split(" ")[0], // stroke color
+            track: "stroke-white/20",
+            value: `text-2xl font-semibold ${colorMap[color].split(" ")[1]}`, // text color
           }}
-        >
-          Risk: {percentage.toFixed(1)}%
-        </Chip>
-      </CardFooter>
+        />
+        <div className="flex flex-col justify-center items-center space-y-1">
+          <Chip
+            variant="bordered"
+            classNames={{
+              base: "border-white/30",
+              content: `${colorMap[color].split(" ")[1]} text-xl font-semibold`,
+            }}
+          >
+            Risk: {(percent ?? 0).toFixed(1)}%
+          </Chip>
+        </div>
+      </CardBody>
     </Card>
   );
 }

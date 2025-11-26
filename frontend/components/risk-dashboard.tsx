@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { trackEvent } from "@/lib/analytics";
 
 interface Zone {
   zone_id: string;
@@ -71,6 +73,26 @@ export default function RiskDashboard() {
     null
   );
   const [comparison, setComparison] = useState<ComparisonJSON | null>(null);
+  // ==============================
+  // 🔍 Refs para métricas de tiempo
+  // ==============================
+
+  // Modelo actual y tiempo en él
+  const modelStartRef = useRef<number>(performance.now());
+  const modelRef = useRef<ModelType>(modelType);
+
+  // Equipo A
+  const teamAStartRef = useRef<number>(performance.now());
+  const teamARef = useRef<number>(selectedTeam);
+
+  // Equipo B
+  const teamBStartRef = useRef<number>(performance.now());
+  const teamBRef = useRef<number>(selectedTeamB);
+
+  // Panel (tab) activo
+  const [activeTab, setActiveTab] = useState("team-a");
+  const tabStartRef = useRef<number>(performance.now());
+  const tabRef = useRef<string>("team-a");
 
   // ===============================
   // 🔹 1. Obtener lista de equipos (A y B según su modelo)
@@ -286,11 +308,77 @@ export default function RiskDashboard() {
     }
   }, [selectedTeamB, teamDataB]);
 
+  // Tiempo que el usuario pasa en cada modelo (turnover / recovery)
+  useEffect(() => {
+    const now = performance.now();
+
+    // No logueamos la primera vez si no quieres ruido, pero para simplificar lo hacemos siempre
+    trackEvent("model_view_time", {
+      model: modelRef.current,
+      duration_ms: now - modelStartRef.current,
+    });
+
+    modelRef.current = modelType;
+    modelStartRef.current = now;
+  }, [modelType]);
+
+  // Tiempo viendo el equipo A
+  useEffect(() => {
+    const now = performance.now();
+
+    trackEvent("team_view_time", {
+      slot: "A",
+      team_id: teamARef.current,
+      duration_ms: now - teamAStartRef.current,
+    });
+
+    teamARef.current = selectedTeam;
+    teamAStartRef.current = now;
+  }, [selectedTeam]);
+
+  // Tiempo viendo el equipo B
+  useEffect(() => {
+    const now = performance.now();
+
+    trackEvent("team_view_time", {
+      slot: "B",
+      team_id: teamBRef.current,
+      duration_ms: now - teamBStartRef.current,
+    });
+
+    teamBRef.current = selectedTeamB;
+    teamBStartRef.current = now;
+  }, [selectedTeamB]);
+
+  // Profundidad máxima de scroll alcanzada en esta vista
+  useEffect(() => {
+    const info = { max: 0 };
+
+    function handleScroll() {
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+
+      const percent = window.scrollY / docHeight;
+      if (percent > info.max) info.max = percent;
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+
+      trackEvent("scroll_depth", {
+        max_scroll_percent: Math.round(info.max * 100),
+      });
+    };
+  }, []);
+
   // ===============================
   // 🧩 Render
   // ===============================
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 p-6 px-10">
       <div className="max-w-full mx-14">
         {/* Header */}
         <div className="mb-8">
@@ -305,68 +393,89 @@ export default function RiskDashboard() {
 
         {/* Selector de Equipo */}
         <div className="my-6">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between bg-gray-500/10 py-4 px-4 rounded-md shadow-md">
-            <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
-              <TeamSelector
-                title="Select Team:"
-                selectedTeam={selectedTeam}
-                onTeamChange={setSelectedTeam}
-                teams={teams}
-              />
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-evenly bg-gray-500/10 py-4 px-4 rounded-md shadow-md">
+            <div className="flex flex-col gap-8">
+                <TeamSelector
+                  title="Select Team:"
+                  selectedTeam={selectedTeam}
+                  onTeamChange={setSelectedTeam}
+                  teams={teams}
+                />
 
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-                <label className="text-lg font-semibold text-foreground">
-                  Model Type:
-                </label>
-                <Select
-                  value={modelType}
-                  onValueChange={(value) => setModelType(value as ModelType)}
-                >
-                  <SelectTrigger className="w-60 border-white">
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MODEL_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex flex-col gap-2 lg:flex-row items-center justify-center lg:justify-between lg:gap-4">
+                  <label className="text-lg font-semibold text-foreground">
+                    Model Type:
+                  </label>
+                  <Select
+                    value={modelType}
+                    onValueChange={(value) => {
+                      trackEvent("model_change_click", { new_model: value });
+                      setModelType(value as ModelType);
+                    }}
+                  >
+                    <SelectTrigger className="w-60 border-white">
+                      <SelectValue placeholder="Select model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MODEL_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <TeamSelector
-                title="Select Opponent Team:"
-                selectedTeam={selectedTeamB}
-                onTeamChange={setSelectedTeamB}
-                teams={teams}
-              />
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-                <label className="text-lg font-semibold text-foreground">
-                  Model Type:
-                </label>
-                <Select
-                  value={modelType_2}
-                  onValueChange={(value) => setModelType_2(value as ModelType)}
-                >
-                  <SelectTrigger className="w-60 border-white">
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MODEL_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex flex-col gap-8 mt-4 lg:mt-0 border-t-2 lg:border-t-0 border-t-white pt-8 lg:pt-0">
+                <TeamSelector
+                  title="Select Opponent Team:"
+                  selectedTeam={selectedTeamB}
+                  onTeamChange={setSelectedTeamB}
+                  teams={teams}
+                />
+                <div className="flex flex-col gap-2 lg:flex-row items-center justify-center lg:justify-between lg:gap-4">
+                  <label className="text-lg font-semibold text-foreground">
+                    Model Type:
+                  </label>
+                  <Select
+                    value={modelType_2}
+                    onValueChange={(value) => {
+                      trackEvent("model_change_click", { new_model: value });
+                      setModelType_2(value as ModelType);
+                    }}
+                  >
+                    <SelectTrigger className="w-60 border-white">
+                      <SelectValue placeholder="Select model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MODEL_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
           </div>
         </div>
 
         <Tabs
-          aria-label="Team Selector"
+          selectedKey={activeTab}
+          onSelectionChange={(key) => {
+            const now = performance.now();
+
+            trackEvent("panel_view_time", {
+              panel: tabRef.current,
+              duration_ms: now - tabStartRef.current,
+            });
+
+            tabRef.current = String(key);
+            tabStartRef.current = now;
+            setActiveTab(String(key));
+          }}
+          aria-label="Selector de equipo"
           color="primary"
           variant="underlined"
           className="w-full items-center justify-center"

@@ -8,6 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { trackEvent } from "@/lib/analytics";
+
 interface TeamSelectorProps {
   title: string;
   selectedTeam: number;
@@ -22,11 +24,18 @@ export default function TeamSelector({
   teams,
 }: TeamSelectorProps) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-4">
       <label className="text-lg font-semibold text-foreground">{title}</label>
       <Select
         value={selectedTeam.toString()}
-        onValueChange={(v) => onTeamChange(Number(v))}
+        onValueChange={(v) => {
+          const num = Number(v);
+          trackEvent("team_change_click", {
+            new_team_id: num,
+            slot: title.includes("Contrario") ? "B" : "A",
+          });
+          onTeamChange(num);
+        }}
       >
         <SelectTrigger className="w-60 border-white">
           <SelectValue placeholder="Select a team" />
